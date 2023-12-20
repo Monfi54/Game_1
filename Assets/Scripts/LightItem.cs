@@ -4,33 +4,42 @@ using UnityEngine;
 
 public class LightItem : MonoBehaviour
 {
-    public GameObject outlinedObject; // Ссылка на объект, который нужно обвести
-    private Outline OutlineScript; // Ссылка на скрипт Outline объекта
+    private Outline outline; // Ссылка на скрипт обводки
 
-    private void Start()
+    void Start()
     {
-        // Получаем скрипт Outline у объекта
-        OutlineScript = outlinedObject.GetComponent<Outline>();
-
-        // Отключаем обводку объекта при старте
-        //OutlineScript.enabled = false;
+        outline = GetComponent<Outline>();
+        if (outline == null)
+        {
+            // Если скрипт обводки не найден, добавьте его
+            outline = gameObject.AddComponent<Outline>();
+        }
+        outline.enabled = false; // Изначально отключаем обводку
     }
 
-    private void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player")) // Если персонаж находится рядом
+        if (other.CompareTag("Player"))
         {
-            // Включаем скрипт Outline
-            OutlineScript.enabled = true;
+            Highlight();
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player")) // Если персонаж уходит
+        if (other.CompareTag("Player"))
         {
-            // Отключаем скрипт Outline
-            OutlineScript.enabled = false;
+            Unhighlight();
         }
+    }
+
+    void Highlight()
+    {
+        outline.enabled = true; // Включаем обводку
+    }
+
+    void Unhighlight()
+    {
+        outline.enabled = false; // Отключаем обводку
     }
 }
